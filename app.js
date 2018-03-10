@@ -8,8 +8,14 @@ var mongoose = require('mongoose');
 var routes = require('./routes');
 var logger = require('./config/logger');
 var errors = require('@feathersjs/errors');
+var cors = require('cors')
+
+
 
 var app = express();
+
+//allow cors
+app.use(cors()) // Use this after the variable declaration
 
 // uncomment after placing your favicon in /public
 //app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));

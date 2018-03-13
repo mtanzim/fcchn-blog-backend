@@ -7,6 +7,7 @@ import mongoose, { Schema } from 'mongoose';
 const PostSchema = new Schema({
   title: { type: String, required: true },
   content: { type: String, required: true },
+  //have user as a string until authorization components are done
   //user: { type: Schema.Types.ObjectId, ref: 'User', required: true }
   user: { type: String, ref: 'User', required: true }
 }, {

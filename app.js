@@ -17,6 +17,9 @@ var app = express();
 //allow cors
 app.use(cors()) // Use this after the variable declaration
 
+//set port
+console.log(process.env.PORT)
+
 // uncomment after placing your favicon in /public
 //app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
 app.use(morgan('dev'));

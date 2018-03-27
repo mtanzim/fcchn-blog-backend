@@ -1,3 +1,4 @@
+require('dotenv').config();
 var express = require('express');
 var path = require('path');
 var favicon = require('serve-favicon');
@@ -5,11 +6,13 @@ var morgan = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var mongoose = require('mongoose');
-var routes = require('./routes');
+
 var logger = require('./config/logger');
 var errors = require('@feathersjs/errors');
 var cors = require('cors')
-
+var passport = require('passport');
+var session = require('express-session');
+//var LocalStrategy = require('passport-local').Strategy;
 
 
 var app = express();
@@ -18,7 +21,7 @@ var app = express();
 app.use(cors()) // Use this after the variable declaration
 
 //set port
-console.log(process.env.PORT)
+//console.log(process.env.PORT)
 
 // uncomment after placing your favicon in /public
 //app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
@@ -27,14 +30,24 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 
+app.use(session({
+  secret: 'secretFCCHanoi',
+  resave: false,
+  saveUninitialized: true
+}));
+require('./config/passport')(passport); // pass passport for configuration
+app.use(passport.initialize());
+app.use(passport.session());
+
+
+var routes = require('./routes')(passport);
 app.use('/api', routes);
 
 // catch 404 and forward to error handler
-app.use(function(req, res, next) {
+app.use(function (req, res, next) {
   var error = new errors.NotFound();
   next(error);
 });
-
 // error handler
 app.use(function(err, req, res, next) {
   switch(err.name) {
@@ -56,11 +69,13 @@ app.use(function(err, req, res, next) {
   res.send(err); 
 });
 
+//routes(app, passport);
 // use ES6 native Promise instead of depricated mongoose Promise
 mongoose.Promise = Promise;
 
 // connect to mongo db
-mongoose.connect('mongodb://localhost:27017/fcchn-blog').then(
+//console.log(process.env.mongo_addr);
+mongoose.connect(process.env.MONGO_ADDR).then(
   () => { logger.info('connect to mongo successfully'); },
   err => { logger.info('error on connect mongodb: ', err); }
 );

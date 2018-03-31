@@ -35,13 +35,17 @@ app.use(session({
   resave: false,
   saveUninitialized: true
 }));
+
 require('./config/passport')(passport); // pass passport for configuration
+
 app.use(passport.initialize());
 app.use(passport.session());
 
 
-var routes = require('./routes')(passport);
-app.use('/api', routes);
+var routes = require('./routes');
+//app.use('/api', routes);
+
+app.use('/api', routes(passport));
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {

@@ -2,7 +2,7 @@ import User from '../models/users.model';
 import bcrypt from 'bcrypt';
 import errors from '@feathersjs/errors';
 //var passport = require('passport');
-import passport from 'passport'
+//import passport from 'passport'
 /**
  * Find user data via id
  */

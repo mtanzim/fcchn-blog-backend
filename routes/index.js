@@ -21,7 +21,28 @@ module.exports = function (passport) {
   // mount post comments at /comments
   router.use('/comments', commentRoutes);
 
-  router.use('/auth', authRoutes);
+  //router.post('/login', authRoutes);
+  router.post('/auth', function auth(req, res, next) {
+    passport.authenticate('local-login', function (err, user, info) {
+      console.log(info);
+      if (err) {
+        return res.json(info)
+        //return next(err); 
+      }
+      if (!user) {
+        return res.json(info)
+        //return next(err);  
+      }
+      req.logIn(user, function (err) {
+        if (err) {
+          //console.log(err); 
+          //return next(err);
+          return res.json(info) 
+        }
+        return res.json(user);
+      });
+    })(req, res, next)
+    });
 
   return router
 }

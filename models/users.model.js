@@ -46,6 +46,29 @@ UserSchema.pre('save', function(next) {
     });
 });
 
+
+//add password validation
+UserSchema.methods.validPassword = function (password) {
+  return bcrypt.compareSync(password, this.password);
+};
+
+
+    // return this.findOne({ 'email': email }, function (err, user) {
+    //   if (err)
+    //     return done(err);
+    //   if (user) {
+    //     //return done (null, false, {message:'User Exists!'});
+    //     if (!user.validPassword(password)) {
+    //       return done(null, false, { message: 'Please check password!' });
+    //     } else {
+    //       return done(null, user);
+    //     }
+    //   } else {
+    //     return done(null, false, { message: 'User not found!' });
+
+    //   }
+    // });
+
 /**
  * Statics
  */
@@ -55,6 +78,22 @@ UserSchema.statics = {
    * @param {ObjectId} id - The objectId of user.
    * @returns {Promise<User, APIError>}
    */
+  authByEmail(email, password, done){
+    return this.findOne({ 'email': email }, function (err, user){
+      if (err) return err;
+      if (user){
+        if (!user.validPassword(password)) {
+          return done(null, false, { message: 'Invalid Password!' })
+        }
+        return done(null, user, { message: 'Welcome!' })
+      }
+      return done(null, false, { message: 'Please check username!' })
+    
+    })
+    // .exec()
+    // .then ((user) => user)
+    //.catch ( e => e)
+  },
   read(id) {
     return this.findById(id)
       .exec()

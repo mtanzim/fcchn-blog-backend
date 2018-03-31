@@ -1,7 +1,9 @@
 'use strict';
 
 var LocalStrategy = require('passport-local').Strategy;
-var User = require('../models/users.model');
+//var User = require('../models/users.model');
+
+import User from '../models/users.model';
 
 module.exports = function (passport) {
   passport.serializeUser(function (user, done) {
@@ -49,22 +51,7 @@ module.exports = function (passport) {
   },
     function (req, email, password, done) {
       process.nextTick(function () {
-        console.log(email);
-        User.findOne({ 'email': email }, function (err, user) {
-          if (err)
-            return done(err);
-          if (user) {
-            //return done (null, false, {message:'User Exists!'});
-            if (!user.validPassword(password)) {
-              return done(null, false, { message: 'Please check password!' });
-            } else {
-              return done(null, user);
-            }
-          } else {
-            return done(null, false, { message: 'User not found!' });
-
-          }
-        });
+        User.authByEmail(email, password, done)            
       });
     }));
 };

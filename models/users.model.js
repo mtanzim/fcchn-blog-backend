@@ -83,11 +83,11 @@ UserSchema.statics = {
       if (err) return err;
       if (user){
         if (!user.validPassword(password)) {
-          return done(null, false, { message: 'Invalid Password!' })
+          return done(null, false, { name: 'authError', message: `Please check password for ${email}!` })
         }
         return done(null, user, { message: 'Welcome!' })
       }
-      return done(null, false, { message: 'Please check username!' })
+      return done(null, false, { name: 'authError', message: `${email} not found!` })
     
     })
     // .exec()

@@ -2,7 +2,9 @@ import express from 'express';
 import userRoutes from './users.route';
 import postRoutes from './posts.route';
 import commentRoutes from './comments.route';
-import authRoutes from './auth.route';
+// import authRoutes from './auth.route';
+
+var errors = require('@feathersjs/errors');
 
 module.exports = function (passport) {
   const router = express.Router(); // eslint-disable-line new-cap
@@ -22,22 +24,19 @@ module.exports = function (passport) {
   router.use('/comments', commentRoutes);
 
   //router.post('/login', authRoutes);
+  //this is to avoid passing passport around
   router.post('/auth', function auth(req, res, next) {
     passport.authenticate('local-login', function (err, user, info) {
-      console.log(info);
+      console.log(info.message);
       if (err) {
-        return res.json(info)
-        //return next(err); 
+        return next(err);
       }
       if (!user) {
-        return res.json(info)
-        //return next(err);  
+        return next(info);
       }
       req.logIn(user, function (err) {
         if (err) {
-          //console.log(err); 
-          //return next(err);
-          return res.json(info) 
+          return next(info) 
         }
         return res.json(user);
       });

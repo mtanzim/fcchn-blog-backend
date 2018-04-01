@@ -43,8 +43,6 @@ app.use(passport.session());
 
 
 var routes = require('./routes');
-//app.use('/api', routes);
-
 app.use('/api', routes(passport));
 
 // catch 404 and forward to error handler
@@ -54,6 +52,8 @@ app.use(function (req, res, next) {
 });
 // error handler
 app.use(function(err, req, res, next) {
+  console.log('came here!')
+  console.log(err.message)
   switch(err.name) {
     case 'CastError':
       err = new errors.BadRequest(`Invalid ${err.path} field`);
@@ -63,6 +63,9 @@ app.use(function(err, req, res, next) {
       break;
     case 'ValidationError':
       err = new errors.BadRequest(`${err.message.split(':')[2].trim()}`);
+      break;
+    case 'authError':
+      err = new errors.BadRequest(err.message)
       break;
     default: // Internal server error
       err = new errors.GeneralError();

@@ -12,7 +12,6 @@ var errors = require('@feathersjs/errors');
 var cors = require('cors')
 var passport = require('passport');
 var session = require('express-session');
-//var LocalStrategy = require('passport-local').Strategy;
 
 
 var app = express();
@@ -52,8 +51,6 @@ app.use(function (req, res, next) {
 });
 // error handler
 app.use(function(err, req, res, next) {
-  console.log('came here!')
-  console.log(err.message)
   switch(err.name) {
     case 'CastError':
       err = new errors.BadRequest(`Invalid ${err.path} field`);
@@ -76,7 +73,6 @@ app.use(function(err, req, res, next) {
   res.send(err); 
 });
 
-//routes(app, passport);
 // use ES6 native Promise instead of depricated mongoose Promise
 mongoose.Promise = Promise;
 

@@ -24,10 +24,12 @@ function index(req, res, next) {
  */
 function create(req, res, next) {
 
-    const {comment_content, comment_authorID, comment_postID} = req.body;
+    const {comment_content, comment_authorID, comment_authorName, comment_postID} = req.body;
+    console.log(req.body);
     const comment = new Comments({
         content:  comment_content,
         authorID: comment_authorID,
+        authorName: comment_authorName,
         postID: comment_postID
     });
 

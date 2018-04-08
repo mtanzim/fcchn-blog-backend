@@ -13,16 +13,6 @@ module.exports = function (passport) {
   router.get('/health-check', (req, res) =>
     res.send('OK')
   );
-
-  // mount user routes at /users
-  router.use('/users', userRoutes);
-
-  // mount post routes at /posts
-  router.use('/posts', postRoutes);
-
-  // mount post comments at /comments
-  router.use('/comments', commentRoutes);
-
   //router.post('/login', authRoutes);
   //this is to avoid passing passport around
   router.post('/auth', function auth(req, res, next) {
@@ -36,12 +26,30 @@ module.exports = function (passport) {
       }
       req.logIn(user, function (err) {
         if (err) {
-          return next(info) 
+          return next(info)
         }
         return res.json(user);
       });
     })(req, res, next)
-    });
+  });
+
+  router.get('/logout',  (req, res) => {
+    //console.log('Coming here!')
+    //console.log(req.url);
+    console.log(req.session.user.id);
+    req.logout();
+    res.status(201).send('Logged out!');
+  })
+  // mount user routes at /users
+  router.use('/users', userRoutes);
+
+  // mount post routes at /posts
+  router.use('/posts', postRoutes);
+
+  // mount post comments at /comments
+  router.use('/comments', commentRoutes);
+
+
 
   return router
 }

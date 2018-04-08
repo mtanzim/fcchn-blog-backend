@@ -1,5 +1,6 @@
 import express from 'express';
 import postController from '../controllers/posts.controller';
+import isLoggedIn from '../config/isLoggedIn';
 
 const router = express.Router(); // eslint-disable-line new-cap
 

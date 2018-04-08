@@ -19,11 +19,14 @@ function index(req, res, next) {
  * @return {Post}
  */
 function create(req, res, next) {
-  const { title, content, user_id } = req.body
+  console.log(req.body);
+  const { title, content, user, username } = req.body
 
   const post = new Post({
       title, content,
-      user: user_id
+      user: user,
+      username:username
+
   })
   post.save()
     .then(post => res.status(httpStatus.CREATED).json(post))
@@ -74,7 +77,8 @@ function read(req, res, next) {
 function update(req, res, next) {
   const { post } = res.locals
   const { title, content, user_id } = req.body
-
+  console.log(user_id);
+  console.log(req.body);
   post.set({ title, content, user: user_id })
   post.save()
     .then(post => res.json(post))

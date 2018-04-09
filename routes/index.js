@@ -15,8 +15,26 @@ module.exports = function (passport) {
   );
   //router.post('/login', authRoutes);
   //this is to avoid passing passport around
-  router.post('/auth', function auth(req, res, next) {
+  router.post('/auth', function (req, res, next) {
     passport.authenticate('local-login', function (err, user, info) {
+      console.log(info.message);
+      if (err) {
+        return next(err);
+      }
+      if (!user) {
+        return next(info);
+      }
+      req.logIn(user, function (err) {
+        if (err) {
+          return next(info)
+        }
+        return res.json(user);
+      });
+    })(req, res, next)
+  });
+
+  router.post('/signup', function auth(req, res, next) {
+    passport.authenticate('local-signup', function (err, user, info) {
       console.log(info.message);
       if (err) {
         return next(err);

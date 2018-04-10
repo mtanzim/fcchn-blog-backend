@@ -20,6 +20,7 @@ function index(req, res, next) {
  */
 function create(req, res, next) {
   console.log(req.body);
+  console.log(req.session);
   const { title, content, user, username } = req.body
 
   const post = new Post({

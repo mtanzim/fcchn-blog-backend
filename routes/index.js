@@ -42,7 +42,7 @@ module.exports = function (passport) {
       if (!user) {
         return next(info);
       }
-      req.logIn(user, function (err) {
+      req.login(user, function (err) {
         if (err) {
           return next(info)
         }
@@ -52,10 +52,13 @@ module.exports = function (passport) {
   });
 
   router.get('/logout',  (req, res) => {
-    //console.log('Coming here!')
-    //console.log(req.url);
-    console.log(req.session.user.id);
+    console.log(req.isAuthenticated())
+    console.log('Coming here!')
+    console.log(req.url);
+    console.log(req.session);
     req.logout();
+    console.log('Logged Out!')
+    console.log(req.isAuthenticated())
     res.status(201).send('Logged out!');
   })
   // mount user routes at /users

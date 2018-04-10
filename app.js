@@ -12,15 +12,47 @@ var errors = require('@feathersjs/errors');
 var cors = require('cors')
 var passport = require('passport');
 var session = require('express-session');
+// var cookieSession = require('cookie-session');
+
+// import isLoggedIn from '../config/isLoggedIn';
+var isLoggedIn = require('./config/isLoggedIn')
+var allowCrossDomain = function (req, res, next) {
+  res.header('Access-Control-Allow-Origin', "http://localhost:3000");
+  res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE');
+  res.header('Access-Control-Allow-Headers', 'Content-Type');
+  res.header('Access-Control-Allow-Credentials', true)
+  next();
+}
 
 
 var app = express();
 
 //allow cors
-app.use(cors()) // Use this after the variable declaration
-
+// app.use(cors()) // Use this after the variable declaration
+app.use(allowCrossDomain);
 //set port
 //console.log(process.env.PORT)
+
+app.use(cookieParser('fccHanoi'));
+app.use(session({
+  secret: 'secretFCCHanoi',
+  resave: false,
+  saveUninitialized: true,
+  // store: sessionStore,
+  cookie: {
+    expires: false,
+    httpOnly: false,
+    domain: '127.0.0.1:3000'
+  }
+}));
+
+// app.use(cookieSession({
+//   secret: 'fccHanoi',
+//   cookie: {
+//     maxAge: 3600000
+//   }
+// }));
+
 
 // uncomment after placing your favicon in /public
 //app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
@@ -29,20 +61,23 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 
-app.use(session({
-  secret: 'secretFCCHanoi',
-  resave: false,
-  saveUninitialized: true
-}));
+
+
 
 require('./config/passport')(passport); // pass passport for configuration
 
 app.use(passport.initialize());
 app.use(passport.session());
 
+app.use((req, res, next) => {
+  console.log(req.session);
+  next();
+})
+
 
 var routes = require('./routes');
 app.use('/api', routes(passport));
+app.use(isLoggedIn);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
@@ -71,6 +106,8 @@ app.use(function(err, req, res, next) {
   logger.error(err);
   res.status(err.code);
   res.send(err); 
+
+
 });
 
 // use ES6 native Promise instead of depricated mongoose Promise

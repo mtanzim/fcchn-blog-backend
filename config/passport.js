@@ -7,14 +7,17 @@ import User from '../models/users.model';
 
 module.exports = function (passport) {
   passport.serializeUser(function (user, done) {
+    console.log('Serializing');
     console.log(user.id);
     done(null, user.id);
   });
 
   passport.deserializeUser(function (id, done) {
-    console.log('deserializaing')
-    console.log(user.id)
+    console.log('Deserializing');
+    console.log(id);
     User.findById(id, function (err, user) {
+      console.log('Deserializing after user');
+      console.log(id);
       done(err, user);
     });
   });

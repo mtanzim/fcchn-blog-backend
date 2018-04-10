@@ -24,7 +24,7 @@ module.exports = function (passport) {
       if (!user) {
         return next(info);
       }
-      req.logIn(user, function (err) {
+      req.login(user, function (err) {
         if (err) {
           return next(info)
         }

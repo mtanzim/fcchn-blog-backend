@@ -33,7 +33,7 @@ app.use(allowCrossDomain);
 //set port
 //console.log(process.env.PORT)
 
-app.use(cookieParser('fccHanoi'));
+app.use(cookieParser('secretFCCHanoi'));
 app.use(session({
   secret: 'secretFCCHanoi',
   resave: false,
@@ -42,7 +42,7 @@ app.use(session({
   cookie: {
     expires: false,
     httpOnly: false,
-    domain: '127.0.0.1:3000'
+    domain: '127.0.0.1:8080'
   }
 }));
 
@@ -69,15 +69,22 @@ require('./config/passport')(passport); // pass passport for configuration
 app.use(passport.initialize());
 app.use(passport.session());
 
+
 app.use((req, res, next) => {
+  console.log('')
+  console.log('Checking Session Information:')
+  console.log("isAuthenticated: \n" + req.isAuthenticated())
   console.log(req.session);
+  console.log(req.user);
+  console.log('')
   next();
 })
 
 
 var routes = require('./routes');
 app.use('/api', routes(passport));
-app.use(isLoggedIn);
+// app.use(isLoggedIn);
+
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {

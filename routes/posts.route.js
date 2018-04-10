@@ -8,7 +8,7 @@ router.route('/')
   /** GET /api/posts - Get list posts */
   .get(postController.index)
   /** POST /api/posts - Create new post */
-  .post(isLoggedIn,postController.create);
+  .post(postController.create);
 
 router.route('/:id')
   /** - Get post by id before doing action */

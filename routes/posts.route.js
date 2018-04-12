@@ -8,16 +8,17 @@ router.route('/')
   /** GET /api/posts - Get list posts */
   .get(postController.index)
   /** POST /api/posts - Create new post */
-  .post(postController.create);
+  .post(isLoggedIn,postController.create);
 
 router.route('/:id')
   /** - Get post by id before doing action */
-  .all(postController.getPost)
+  //replaced with promise functionality as all was not working!!!
+  // .all(postController.getPost)
   /** - Read a post with post's id */
   .get(postController.read)
   /** - Update new post with post's id */
-  .put(postController.update)
+  .put(isLoggedIn,postController.update)
   /** - Delete new post with post's id */
-  .delete(postController.remove);
+  .delete(isLoggedIn, postController.remove);
 
 export default router;

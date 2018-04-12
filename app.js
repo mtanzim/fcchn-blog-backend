@@ -1,4 +1,4 @@
-require('dotenv').config();
+
 var express = require('express');
 var path = require('path');
 var favicon = require('serve-favicon');
@@ -12,10 +12,10 @@ var errors = require('@feathersjs/errors');
 var cors = require('cors')
 var passport = require('passport');
 var session = require('express-session');
-// var cookieSession = require('cookie-session');
 
-// import isLoggedIn from '../config/isLoggedIn';
-var isLoggedIn = require('./config/isLoggedIn')
+var routes = require('./routes');
+
+var app = express();
 var allowCrossDomain = function (req, res, next) {
   res.header('Access-Control-Allow-Origin', "http://localhost:3000");
   res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE');
@@ -24,64 +24,47 @@ var allowCrossDomain = function (req, res, next) {
   next();
 }
 
+require('dotenv').config();
+require('./config/passport')(passport); // pass passport for configuration
+// uncomment after placing your favicon in /public
+//app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
+//logger
+app.use(morgan('dev'));
+//for req.boyd
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: false }));
+// app.use(cookieParser());
 
-var app = express();
-
-//allow cors
-// app.use(cors()) // Use this after the variable declaration
-app.use(allowCrossDomain);
-//set port
-//console.log(process.env.PORT)
-
-app.use(cookieParser('secretFCCHanoi'));
 app.use(session({
   secret: 'secretFCCHanoi',
   resave: false,
-  saveUninitialized: true,
-  // store: sessionStore,
-  cookie: {
-    expires: false,
-    httpOnly: false,
-    domain: '127.0.0.1:8080'
-  }
+  saveUninitialized: false,
 }));
 
-// app.use(cookieSession({
-//   secret: 'fccHanoi',
-//   cookie: {
-//     maxAge: 3600000
-//   }
-// }));
-
-
-// uncomment after placing your favicon in /public
-//app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
-app.use(morgan('dev'));
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: false }));
-app.use(cookieParser());
-
-
-
-
-require('./config/passport')(passport); // pass passport for configuration
-
+app.use(allowCrossDomain);
 app.use(passport.initialize());
 app.use(passport.session());
 
-
+//credentials logging middleware
 app.use((req, res, next) => {
   console.log('')
-  console.log('Checking Session Information:')
-  console.log("isAuthenticated: \n" + req.isAuthenticated())
-  console.log(req.session);
-  console.log(req.user);
+  // console.log('Cookies: ', req.cookies)
+  // // Cookies that have been signed
+  // console.log('Signed Cookies: ', req.signedCookies)
+  // console.log('Checking Session Information:')
+  console.log("isAuthenticated: " + req.isAuthenticated())
+  // console.log(req.session);
+  if (req.isAuthenticated()){
+    console.log("User credentials:");
+    console.log(req.user);
+  }
+
   console.log('')
   next();
 })
 
 
-var routes = require('./routes');
+
 app.use('/api', routes(passport));
 // app.use(isLoggedIn);
 

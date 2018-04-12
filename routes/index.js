@@ -52,13 +52,10 @@ module.exports = function (passport) {
   });
 
   router.get('/logout',  (req, res) => {
-    console.log(req.isAuthenticated())
-    console.log('Coming here!')
-    console.log(req.url);
-    console.log(req.session);
-    req.logout();
+    req.logOut();
+    req.session.destroy();
     console.log('Logged Out!')
-    console.log(req.isAuthenticated())
+    console.log('isAuthenticated after logout: ' +req.isAuthenticated())
     res.status(201).send('Logged out!');
   })
   // mount user routes at /users

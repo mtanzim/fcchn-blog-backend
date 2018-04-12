@@ -19,8 +19,9 @@ function index(req, res, next) {
  * @return {Post}
  */
 function create(req, res, next) {
+  console.log('Creating post with the following:')
   console.log(req.body);
-  console.log(req.session);
+  // console.log(req.session);
   const { title, content, user, username } = req.body
 
   const post = new Post({
@@ -37,13 +38,16 @@ function create(req, res, next) {
     })
 }
 
+
+//Was this happenning asynchronously?
 /**
  * Get post by id
  */
-function getPost(req, res, next) {
+function getPost(req, res) {
+  console.log('Getting Post to set res.locals!')
   const { id } = req.params
-
-  Post.findById(id)
+  console.log(req.params);
+  return Post.findById(id)
     .exec()
     .then((post) => {
       if (!post) {
@@ -51,14 +55,19 @@ function getPost(req, res, next) {
           status: httpStatus.NOT_FOUND,
           message: 'Post not found'
         }
-        next(err)
+        return err;
       }
+      console.log('post:');
+      console.log(post);
+      console.log('res.locals.post:');
       res.locals.post = post
-      next()
+      console.log(res.locals.post);
+      // console.log(next);
+      return post;
     })
     .catch((e) => {
       e.status = httpStatus.UNPROCESSABLE_ENTITY
-      next(e)
+      return e;
     })
 }
 
@@ -66,9 +75,12 @@ function getPost(req, res, next) {
  * Read a post
  */
 function read(req, res, next) {
-  const { post } = res.locals
-
-  res.json(post)
+  console.log('Reading single Post!')
+  getPost(req, res)
+  .then(() => {
+    const { post } = res.locals
+    res.json(post)
+  })
 }
 
 /**
@@ -76,17 +88,25 @@ function read(req, res, next) {
  *
  */
 function update(req, res, next) {
-  const { post } = res.locals
-  const { title, content, user_id } = req.body
-  console.log(user_id);
-  console.log(req.body);
-  post.set({ title, content, user: user_id })
-  post.save()
-    .then(post => res.json(post))
-    .catch((e) => {
-      e.status = httpStatus.UNPROCESSABLE_ENTITY
-      next(e)
-    })
+  // getPost(req, res, next);
+  getPost(req, res)
+  .then( () => {
+    console.log('Updating Post!')
+    const { post } = res.locals
+    const { title, content, user_id } = req.body
+    console.log(user_id);
+    console.log(req.body);
+    console.log(res.locals);
+    post.set({ title, content, user: user_id })
+    post.save()
+      .then(post => res.json(post))
+      .catch((e) => {
+        e.status = httpStatus.UNPROCESSABLE_ENTITY
+        next(e)
+      })
+
+  })
+
 }
 
 /**
@@ -94,13 +114,17 @@ function update(req, res, next) {
  *
  */
 function remove(req, res, next) {
-  const { post } = res.locals
+  console.log('Deleting Post!')
+  getPost(req, res)
+  .then(() => {
+    const { post } = res.locals
 
-  post.remove()
-    .then(post => res.json(post))
-    .catch((e) => {
-      e.status = httpStatus.UNPROCESSABLE_ENTITY
-      next(e)
+    post.remove()
+      .then(post => res.json(post))
+      .catch((e) => {
+        e.status = httpStatus.UNPROCESSABLE_ENTITY
+        next(e)
+      })
     })
 }
 

@@ -10,10 +10,10 @@ module.exports = function isLoggedIn(req, res, next) {
         console.log('Logged in! Going next!')
         next();
     } else {
-        let err = { name: 'authError', message: `Please log in!` }
+        const err = { name: 'authError', message: `Please log in!` }
         // return res.send(403, { error: "Please log in!" });
         //  res.status(403).send({error: "Please log in"});
         //  e.status
-         next(err)
+         return next(err)
     }
 }

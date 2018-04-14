@@ -14,6 +14,7 @@ var passport = require('passport');
 var session = require('express-session');
 
 var routes = require('./routes');
+// var isLoggedIn = require('./config/isLoggedIn')
 
 var app = express();
 var allowCrossDomain = function (req, res, next) {
@@ -51,7 +52,7 @@ app.use((req, res, next) => {
   // console.log('Cookies: ', req.cookies)
   // // Cookies that have been signed
   // console.log('Signed Cookies: ', req.signedCookies)
-  // console.log('Checking Session Information:')
+  console.log('Checking Session Authentication:')
   console.log("isAuthenticated: " + req.isAuthenticated())
   // console.log(req.session);
   if (req.isAuthenticated()){
@@ -66,7 +67,7 @@ app.use((req, res, next) => {
 
 
 app.use('/api', routes(passport));
-// app.use(isLoggedIn);
+
 
 
 // catch 404 and forward to error handler

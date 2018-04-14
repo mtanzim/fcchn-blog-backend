@@ -2,6 +2,7 @@ import express from 'express';
 import userRoutes from './users.route';
 import postRoutes from './posts.route';
 import commentRoutes from './comments.route';
+// import isLoggedIn from '../config/isLoggedIn'
 // import authRoutes from './auth.route';
 
 var errors = require('@feathersjs/errors');
@@ -62,10 +63,13 @@ module.exports = function (passport) {
   router.use('/users', userRoutes);
 
   // mount post routes at /posts
-  router.use('/posts', postRoutes);
+  
+  
 
   // mount post comments at /comments
   router.use('/comments', commentRoutes);
+
+  router.use('/posts', postRoutes);
 
 
 

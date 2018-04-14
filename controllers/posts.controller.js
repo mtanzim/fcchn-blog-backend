@@ -1,6 +1,8 @@
 import Post from '../models/posts.model';
 import httpStatus from 'http-status';
 import errors from '@feathersjs/errors';
+import { resolve } from 'url';
+// import {isLoggedIn} from '../config/isLoggedIn'
 /**
  * Get all posts
  * @return {json} Data of posts
@@ -39,26 +41,33 @@ function create(req, res, next) {
 }
 
 
-function validateUser(post, req) {
-  if (post.user.toString() !== req.user._id.toString()) {
-    console.log('Comparing user of Post and Session!')
-    let err = {
-      name: 'authError',
-      status: httpStatus.UNAUTHORIZED,
-      message: 'User is not authorized to edit post!'
-    }
-    console.log('returning error:');
-    return err
-  }
+function validateUser(req, res, next) {
 
+  console.log('Validating Post for user access!')
+  getPost(req, res, next)
+  .then(post => {
+    console.log(post)
+    console.log(req.user)
+    if (post.user.toString() !== req.user._id.toString()) {
+      console.log('Comparing user of Post and Session!')
+      let err = {
+        name: 'authError',
+        status: httpStatus.UNAUTHORIZED,
+        message: 'User is not authorized to edit post!'
+      }
+      console.log('returning error:');
+      return next(err);
+    } 
+    next();
+  })
 }
 
 
-//Was this happenning asynchronously?
+//Was this happenning asynchronously? Doesn't work with express all!
 /**
  * Get post by id
  */
-function getPost(req, res) {
+function getPost(req, res, next) {
   console.log('In getPost!')
   const { id } = req.params
   // console.log(req.params);
@@ -72,16 +81,21 @@ function getPost(req, res) {
           status: httpStatus.NOT_FOUND,
           message: 'Post not found'
         }
-        return err;
+        next (err)
       }
       console.log('post:');
       console.log(post);
-
+      // console.log('before storing post')
+      // console.log (req.user)
+      // res.locals.post = post;
       return post;
+      // console.log('after storing post')
+      // console.log(req.user)
+      // next();
     })
     .catch((e) => {
       e.status = httpStatus.UNPROCESSABLE_ENTITY
-      return e;
+      next(err)
     })
 }
 
@@ -90,16 +104,14 @@ function getPost(req, res) {
  */
 function read(req, res, next) {
   console.log('Reading single Post!')
-  getPost(req, res)
-  .then((post) => {
-    console.log('Back in read!')
-    // console.log(err);
+  console.log('Checking isLogged in:')
+  console.log(req.isAuthenticated());
+  getPost(req, res, next)
+  .then (post => {
     console.log(post);
-    // if (err){
-    //   return next(err);
-    // }
     res.json(post)
   })
+
 }
 
 /**
@@ -107,37 +119,19 @@ function read(req, res, next) {
  *
  */
 function update(req, res, next) {
-  // getPost(req, res, next);
-  getPost(req, res, true)
-  .then( (err, post) => {
-    if (err) {
-      return next(err);
-    }
-    // const { post } = res.locals
-    // console.log(typeof(req.user._id));
-    // console.log(typeof(post.user))
-    // console.log(req.user._id.toString());
-    // console.log(post.user.toString())
-
-      
-    // } else {
-      //updates
-      const { title, content, user_id } = req.body
-      console.log(user_id);
-      console.log(req.body);
-      console.log(res.locals);
-      post.set({ title, content, user: user_id })
-      post.save()
-        .then(post => res.json(post))
-        .catch((e) => {
-          e.status = httpStatus.UNPROCESSABLE_ENTITY
-          return next(e)
-        })
-
-    // }
-
+  console.log('Updating Post!')
+  // const {post} = res.locals
+  getPost(req, res, next)
+  .then(post => {
+    const { title, content } = req.body
+    post.set({ title, content })
+    post.save()
+      .then(post => res.json(post))
+      .catch((e) => {
+        e.status = httpStatus.UNPROCESSABLE_ENTITY
+        next(e)
+      })
   })
-
 }
 
 /**
@@ -146,19 +140,17 @@ function update(req, res, next) {
  */
 function remove(req, res, next) {
   console.log('Deleting Post!')
-  getPost(req, res, true)
-  .then((err,post) => {
-    // const { post } = res.locals
-    if (err) {
-      return next(err);
-    }
+  getPost(req, res, next)
+  .then(post => {
+    // const {post} = res.locals
     post.remove()
       .then(post => res.json(post))
       .catch((e) => {
         e.status = httpStatus.UNPROCESSABLE_ENTITY
-        return next(e)
+        next(e)
       })
     })
 }
 
-export default { index, create, getPost, read, update, remove };
+
+export default { index, create, getPost, validateUser, read, update, remove };

@@ -1,7 +1,7 @@
 'use strict';
  
 
-module.exports = function isLoggedIn(req, res, next) {
+function isLoggedIn(req, res, next) {
     // console.log(req.body);
     // console.log(req.session);
     console.log('Checking isLogged in:')
@@ -14,6 +14,8 @@ module.exports = function isLoggedIn(req, res, next) {
         // return res.send(403, { error: "Please log in!" });
         //  res.status(403).send({error: "Please log in"});
         //  e.status
-         return next(err)
+         next(err);
     }
 }
+
+export default isLoggedIn;

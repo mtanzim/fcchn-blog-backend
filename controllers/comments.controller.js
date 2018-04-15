@@ -1,4 +1,5 @@
 import Comments from '../models/comments.model';
+import validateUserCommon from '../config/validateUser'
 /**
  * Load all comments of a post in descending order of 'createdAt' timestamp.
  * @param {String} req.body.post_id
@@ -38,17 +39,29 @@ function create(req, res, next) {
       .catch(error => next(error));
 }
 
+
+function validateCommentUser(req, res, next) {
+  const { id } = req.params;
+  Comments.findById(id, function (err, comment) {
+    if (err) return next(err);
+    console.log(comment);
+    validateUserCommon(req,res,next, comment.authorID)
+  })
+}
+
 /**
  * Edit a comment
  */
 function update(req, res, next) {
+  console.log('updating comment!')
   const {id} = req.params;
   const update = req.body;
-
   Comments
     .findByIdAndUpdate(id, update, { new: true })
     .exec()
-    .then(updatedComment => res.json(updatedComment))
+    .then(updatedComment => {
+        res.json(updatedComment)}
+    )
     .catch(error => next(error));
 
 }
@@ -57,6 +70,7 @@ function update(req, res, next) {
  * Delete a comment
  */
 function remove(req, res, next) {
+  console.log('removing comment!')
   const {id} = req.params;
   const remove = req.body;
   Comments
@@ -66,4 +80,4 @@ function remove(req, res, next) {
     .catch(e => next(e));
 }
 
-export default { index, create, update, remove };
+export default { index, create, update, remove, validateCommentUser  };

@@ -2,6 +2,7 @@ import Post from '../models/posts.model';
 import httpStatus from 'http-status';
 import errors from '@feathersjs/errors';
 import { resolve } from 'url';
+import validateUserCommon from '../config/validateUser'
 // import {isLoggedIn} from '../config/isLoggedIn'
 /**
  * Get all posts
@@ -21,9 +22,9 @@ function index(req, res, next) {
  * @return {Post}
  */
 function create(req, res, next) {
-  console.log('Creating post with the following:')
-  console.log(req.body);
-  // console.log(req.session);
+  //console.log('Creating post with the following:')
+  //console.log(req.body);
+  // //console.log(req.session);
   const { title, content, user, username } = req.body
 
   const post = new Post({
@@ -43,22 +44,10 @@ function create(req, res, next) {
 
 function validateUser(req, res, next) {
 
-  console.log('Validating Post for user access!')
+  //console.log('Validating Post for user access!')
   getPost(req, res, next)
   .then(post => {
-    console.log(post)
-    console.log(req.user)
-    if (post.user.toString() !== req.user._id.toString()) {
-      console.log('Comparing user of Post and Session!')
-      let err = {
-        name: 'authError',
-        status: httpStatus.UNAUTHORIZED,
-        message: 'User is not authorized to edit post!'
-      }
-      console.log('returning error:');
-      return next(err);
-    } 
-    next();
+    validateUserCommon(req,res,next, post.user);
   })
 }
 
@@ -68,9 +57,9 @@ function validateUser(req, res, next) {
  * Get post by id
  */
 function getPost(req, res, next) {
-  console.log('In getPost!')
+  //console.log('In getPost!')
   const { id } = req.params
-  // console.log(req.params);
+  // //console.log(req.params);
   return Post.findById(id)
     //this command turns the query into a full fleged promise
     .exec()
@@ -83,14 +72,14 @@ function getPost(req, res, next) {
         }
         next (err)
       }
-      console.log('post:');
-      console.log(post);
-      // console.log('before storing post')
-      // console.log (req.user)
+      //console.log('post:');
+      //console.log(post);
+      // //console.log('before storing post')
+      // //console.log (req.user)
       // res.locals.post = post;
       return post;
-      // console.log('after storing post')
-      // console.log(req.user)
+      // //console.log('after storing post')
+      // //console.log(req.user)
       // next();
     })
     .catch((e) => {
@@ -103,12 +92,12 @@ function getPost(req, res, next) {
  * Read a post
  */
 function read(req, res, next) {
-  console.log('Reading single Post!')
-  console.log('Checking isLogged in:')
-  console.log(req.isAuthenticated());
+  //console.log('Reading single Post!')
+  //console.log('Checking isLogged in:')
+  //console.log(req.isAuthenticated());
   getPost(req, res, next)
   .then (post => {
-    console.log(post);
+    //console.log(post);
     res.json(post)
   })
 
@@ -119,7 +108,7 @@ function read(req, res, next) {
  *
  */
 function update(req, res, next) {
-  console.log('Updating Post!')
+  //console.log('Updating Post!')
   // const {post} = res.locals
   getPost(req, res, next)
   .then(post => {
@@ -139,7 +128,7 @@ function update(req, res, next) {
  *
  */
 function remove(req, res, next) {
-  console.log('Deleting Post!')
+  //console.log('Deleting Post!')
   getPost(req, res, next)
   .then(post => {
     // const {post} = res.locals

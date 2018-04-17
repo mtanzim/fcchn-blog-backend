@@ -52,6 +52,17 @@ module.exports = function (passport) {
     })(req, res, next)
   });
 
+  router.get('/readSession', (req, res) => {
+    if (req.isAuthenticated()) {
+      console.log("User credentials:");
+      console.log(req.user);
+      res.send(req.user);
+    } else {
+      console.log('No session user!')
+      res.json(undefined)
+    }
+  })
+
   router.get('/logout',  (req, res) => {
     req.logOut();
     req.session.destroy();

@@ -108,10 +108,16 @@ UserSchema.statics = {
 
   create(user, done) {
     let {username, email} = user;
-    this.findOne({ 'email': email, 'username':username }, function (err, user) {
+    this.findOne({ 'email': email }, function (err, user) {
       if (err) return err;
       if (user) {
-          return done(null, false, { name: 'authError', message: `${email} or ${username} already exists!` })
+          return done(null, false, { name: 'authError', message: `${email} already exists!` })
+      }
+    })
+    this.findOne({'username': username }, function (err, user) {
+      if (err) return err;
+      if (user) {
+        return done(null, false, { name: 'authError', message: `Username ${username} already exists!` })
       }
     })
     let newUser = new this(user);

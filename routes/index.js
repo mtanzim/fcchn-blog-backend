@@ -2,7 +2,7 @@ import express from 'express';
 import userRoutes from './users.route';
 import postRoutes from './posts.route';
 import commentRoutes from './comments.route';
-// import isLoggedIn from '../config/isLoggedIn'
+import isLoggedIn from '../config/isLoggedIn'
 // import authRoutes from './auth.route';
 
 var errors = require('@feathersjs/errors');
@@ -52,15 +52,20 @@ module.exports = function (passport) {
     })(req, res, next)
   });
 
-  router.get('/readSession', (req, res) => {
-    if (req.isAuthenticated()) {
-      console.log("User credentials:");
-      console.log(req.user);
+  router.get('/readSession', isLoggedIn,  function (req, res, next) {
+    // isLoggedIn()
+    // if (req.isAuthenticated()) {
+    //   console.log("User credentials:");
+    //   console.log(req.user);
       res.send(req.user);
-    } else {
-      console.log('No session user!')
-      res.json(undefined)
-    }
+    // } else {
+    //   let err = {
+    //     name: 'authError',
+    //     status: httpStatus.NOT_FOUND,
+    //     message: 'Please log in'
+    //   }
+    //   return next(err)
+    // }
   })
 
   router.get('/logout',  (req, res) => {

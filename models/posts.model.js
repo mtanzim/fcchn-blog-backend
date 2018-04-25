@@ -9,11 +9,11 @@ const PostSchema = new Schema({
   content: { type: String, required: true },
   //have user as a string until authorization components are done
   //user: { type: Schema.Types.ObjectId, ref: 'User', required: true }
-  username: {type:String, required: true},
+  username: { type: String, required: true },
   user: { type: Schema.Types.ObjectId, ref: 'User', required: true }
 }, {
-  timestamps: true
-});
+    timestamps: true
+  });
 
 /**
  * Add your

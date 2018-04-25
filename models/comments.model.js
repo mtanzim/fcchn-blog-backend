@@ -5,16 +5,16 @@ var Schema = mongoose.Schema;
  * Comment Schema
  */
 var CommentSchema = new Schema({
-  content: {type: String, required: true},
-  authorName: {type: String, required: true},
-  authorID: {type: Schema.Types.ObjectId, ref: 'User', required: true},
-  postID: {type: Schema.Types.ObjectId, ref: 'Post', required: true}
+  content: { type: String, required: true },
+  authorName: { type: String, required: true },
+  authorID: { type: Schema.Types.ObjectId, ref: 'User', required: true },
+  postID: { type: Schema.Types.ObjectId, ref: 'Post', required: true }
 });
 
 // Virtual for comment's url
 CommentSchema
   .virtual('url')
-  .get(function() {
+  .get(function () {
     return '/' + this._id;
   })
 

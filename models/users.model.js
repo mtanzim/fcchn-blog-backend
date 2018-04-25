@@ -27,17 +27,17 @@ const UserSchema = new mongoose.Schema({
   firstname: { type: String },
   lastname: { type: String },
   description: { type: String },
-}, 
-{
-  timestamps: true,
-  toObject: {
-    transform: (doc, ret) => {
-      delete ret.password;
+},
+  {
+    timestamps: true,
+    toObject: {
+      transform: (doc, ret) => {
+        delete ret.password;
+      }
     }
-  }
-});
+  });
 
-UserSchema.pre('save', function(next) {
+UserSchema.pre('save', function (next) {
   const saltRounds = 10; // should be moved to config file later
   bcrypt.hash(this.password, saltRounds)
     .then(hash => {
@@ -53,22 +53,6 @@ UserSchema.methods.validPassword = function (password) {
 };
 
 
-    // return this.findOne({ 'email': email }, function (err, user) {
-    //   if (err)
-    //     return done(err);
-    //   if (user) {
-    //     //return done (null, false, {message:'User Exists!'});
-    //     if (!user.validPassword(password)) {
-    //       return done(null, false, { message: 'Please check password!' });
-    //     } else {
-    //       return done(null, user);
-    //     }
-    //   } else {
-    //     return done(null, false, { message: 'User not found!' });
-
-    //   }
-    // });
-
 /**
  * Statics
  */
@@ -78,17 +62,17 @@ UserSchema.statics = {
    * @param {ObjectId} id - The objectId of user.
    * @returns {Promise<User, APIError>}
    */
-  authByEmail(email, password, done){
-    return this.findOne({ 'email': email }, function (err, user){
+  authByEmail(email, password, done) {
+    return this.findOne({ 'email': email }, function (err, user) {
       if (err) return err;
-      if (user){
+      if (user) {
         if (!user.validPassword(password)) {
           return done(null, false, { name: 'authError', message: `Please check password for ${email}!` })
         }
         return done(null, user, { message: 'Welcome!' })
       }
       return done(null, false, { name: 'authError', message: `${email} not found!` })
-    
+
     })
     // .exec()
     // .then ((user) => user)
@@ -107,22 +91,22 @@ UserSchema.statics = {
   },
 
   create(user, done) {
-    let {username, email} = user;
+    let { username, email } = user;
     this.findOne({ 'email': email }, function (err, user) {
       if (err) return err;
       if (user) {
-          return done(null, false, { name: 'authError', message: `${email} already exists!` })
+        return done(null, false, { name: 'authError', message: `${email} already exists!` })
       }
     })
-    this.findOne({'username': username }, function (err, user) {
+    this.findOne({ 'username': username }, function (err, user) {
       if (err) return err;
       if (user) {
         return done(null, false, { name: 'authError', message: `Username ${username} already exists!` })
       }
     })
     let newUser = new this(user);
-    newUser.save( err => {
-      if (err){
+    newUser.save(err => {
+      if (err) {
         return done(null, false, err)
       }
       return done(null, newUser, { message: 'Welcome!' });

@@ -55,7 +55,7 @@ app.use((req, res, next) => {
   console.log('Checking Session Authentication:')
   console.log("isAuthenticated: " + req.isAuthenticated())
   // console.log(req.session);
-  if (req.isAuthenticated()){
+  if (req.isAuthenticated()) {
     console.log("User credentials:");
     console.log(req.user);
   }
@@ -76,10 +76,10 @@ app.use(function (req, res, next) {
   next(error);
 });
 // error handler
-app.use(function(err, req, res, next) {
+app.use(function (err, req, res, next) {
   console.log('Coming to error handler!')
   console.log(err.name)
-  switch(err.name) {
+  switch (err.name) {
     case 'CastError':
       err = new errors.BadRequest(`Invalid ${err.path} field`);
       break;
@@ -98,7 +98,7 @@ app.use(function(err, req, res, next) {
 
   logger.error(err);
   res.status(err.code);
-  res.send(err); 
+  res.send(err);
 
 
 });

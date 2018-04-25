@@ -52,35 +52,23 @@ module.exports = function (passport) {
     })(req, res, next)
   });
 
-  router.get('/readSession', isLoggedIn,  function (req, res, next) {
-    // isLoggedIn()
-    // if (req.isAuthenticated()) {
-    //   console.log("User credentials:");
-    //   console.log(req.user);
-      res.send(req.user);
-    // } else {
-    //   let err = {
-    //     name: 'authError',
-    //     status: httpStatus.NOT_FOUND,
-    //     message: 'Please log in'
-    //   }
-    //   return next(err)
-    // }
+  router.get('/readSession', isLoggedIn, function (req, res, next) {
+    res.send(req.user);
   })
 
-  router.get('/logout',  (req, res) => {
+  router.get('/logout', (req, res) => {
     req.logOut();
     req.session.destroy();
     console.log('Logged Out!')
-    console.log('isAuthenticated after logout: ' +req.isAuthenticated())
+    console.log('isAuthenticated after logout: ' + req.isAuthenticated())
     res.status(201).send('Logged out!');
   })
   // mount user routes at /users
   router.use('/users', userRoutes);
 
   // mount post routes at /posts
-  
-  
+
+
 
   // mount post comments at /comments
   router.use('/comments', commentRoutes);

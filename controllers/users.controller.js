@@ -32,7 +32,7 @@ function update(req, res, next) {
 function create(req, res, next) {
   const { username, password, email } = req.body;
 
-  User.create({username, password, email })
+  User.create({ username, password, email })
     .then(createdUser => res.json(createdUser))
     .catch(e => next(e));
 }

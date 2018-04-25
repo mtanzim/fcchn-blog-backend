@@ -39,7 +39,7 @@ module.exports = function (passport) {
   },
     function (req, email, password, done) {
       process.nextTick(function () {
-        User.authByEmail(email, password, done)            
+        User.authByEmail(email, password, done)
       });
     }));
 };

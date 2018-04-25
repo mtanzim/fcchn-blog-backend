@@ -28,9 +28,9 @@ function create(req, res, next) {
   const { title, content, user, username } = req.body
 
   const post = new Post({
-      title, content,
-      user: user,
-      username:username
+    title, content,
+    user: user,
+    username: username
 
   })
   post.save()
@@ -46,9 +46,9 @@ function validateUser(req, res, next) {
 
   //console.log('Validating Post for user access!')
   getPost(req, res, next)
-  .then(post => {
-    validateUserCommon(req,res,next, post.user);
-  })
+    .then(post => {
+      validateUserCommon(req, res, next, post.user);
+    })
 }
 
 
@@ -70,7 +70,7 @@ function getPost(req, res, next) {
           status: httpStatus.NOT_FOUND,
           message: 'Post not found'
         }
-        next (err)
+        next(err)
       }
       //console.log('post:');
       //console.log(post);
@@ -96,10 +96,10 @@ function read(req, res, next) {
   //console.log('Checking isLogged in:')
   //console.log(req.isAuthenticated());
   getPost(req, res, next)
-  .then (post => {
-    //console.log(post);
-    res.json(post)
-  })
+    .then(post => {
+      //console.log(post);
+      res.json(post)
+    })
 
 }
 
@@ -111,16 +111,16 @@ function update(req, res, next) {
   //console.log('Updating Post!')
   // const {post} = res.locals
   getPost(req, res, next)
-  .then(post => {
-    const { title, content } = req.body
-    post.set({ title, content })
-    post.save()
-      .then(post => res.json(post))
-      .catch((e) => {
-        e.status = httpStatus.UNPROCESSABLE_ENTITY
-        next(e)
-      })
-  })
+    .then(post => {
+      const { title, content } = req.body
+      post.set({ title, content })
+      post.save()
+        .then(post => res.json(post))
+        .catch((e) => {
+          e.status = httpStatus.UNPROCESSABLE_ENTITY
+          next(e)
+        })
+    })
 }
 
 /**
@@ -130,14 +130,14 @@ function update(req, res, next) {
 function remove(req, res, next) {
   //console.log('Deleting Post!')
   getPost(req, res, next)
-  .then(post => {
-    // const {post} = res.locals
-    post.remove()
-      .then(post => res.json(post))
-      .catch((e) => {
-        e.status = httpStatus.UNPROCESSABLE_ENTITY
-        next(e)
-      })
+    .then(post => {
+      // const {post} = res.locals
+      post.remove()
+        .then(post => res.json(post))
+        .catch((e) => {
+          e.status = httpStatus.UNPROCESSABLE_ENTITY
+          next(e)
+        })
     })
 }
 

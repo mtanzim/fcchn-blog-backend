@@ -9,11 +9,11 @@ function index(req, res, next) {
   Comments
     .find()
     .where('postID').equals(req.query.post_id)
-    .sort({createdAt: -1})
-    .exec(function(err, list_comments){
-        if (err) { return next(err);}
-        // Successful, so return the JSON
-        res.json(list_comments);
+    .sort({ createdAt: -1 })
+    .exec(function (err, list_comments) {
+      if (err) { return next(err); }
+      // Successful, so return the JSON
+      res.json(list_comments);
     })
 }
 
@@ -25,18 +25,18 @@ function index(req, res, next) {
  */
 function create(req, res, next) {
 
-    const {comment_content, comment_authorID, comment_authorName, comment_postID} = req.body;
-    console.log(req.body);
-    const comment = new Comments({
-        content:  comment_content,
-        authorID: comment_authorID,
-        authorName: comment_authorName,
-        postID: comment_postID
-    });
+  const { comment_content, comment_authorID, comment_authorName, comment_postID } = req.body;
+  console.log(req.body);
+  const comment = new Comments({
+    content: comment_content,
+    authorID: comment_authorID,
+    authorName: comment_authorName,
+    postID: comment_postID
+  });
 
-    comment.save()
-      .then(comment => res.status(201).json(comment))
-      .catch(error => next(error));
+  comment.save()
+    .then(comment => res.status(201).json(comment))
+    .catch(error => next(error));
 }
 
 
@@ -45,7 +45,7 @@ function validateCommentUser(req, res, next) {
   Comments.findById(id, function (err, comment) {
     if (err) return next(err);
     console.log(comment);
-    validateUserCommon(req,res,next, comment.authorID)
+    validateUserCommon(req, res, next, comment.authorID)
   })
 }
 
@@ -54,13 +54,14 @@ function validateCommentUser(req, res, next) {
  */
 function update(req, res, next) {
   console.log('updating comment!')
-  const {id} = req.params;
+  const { id } = req.params;
   const update = req.body;
   Comments
     .findByIdAndUpdate(id, update, { new: true })
     .exec()
     .then(updatedComment => {
-        res.json(updatedComment)}
+      res.json(updatedComment)
+    }
     )
     .catch(error => next(error));
 
@@ -71,7 +72,7 @@ function update(req, res, next) {
  */
 function remove(req, res, next) {
   console.log('removing comment!')
-  const {id} = req.params;
+  const { id } = req.params;
   const remove = req.body;
   Comments
     .findByIdAndRemove(id, remove)
@@ -80,4 +81,4 @@ function remove(req, res, next) {
     .catch(e => next(e));
 }
 
-export default { index, create, update, remove, validateCommentUser  };
+export default { index, create, update, remove, validateCommentUser };

@@ -3,7 +3,7 @@ var express = require('express');
 var path = require('path');
 var favicon = require('serve-favicon');
 var morgan = require('morgan');
-var cookieParser = require('cookie-parser');
+// var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var mongoose = require('mongoose');
 
@@ -26,15 +26,13 @@ var allowCrossDomain = function (req, res, next) {
 }
 
 require('dotenv').config();
-require('./config/passport')(passport); // pass passport for configuration
-// uncomment after placing your favicon in /public
-//app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
+require('./config/passport')(passport); // pass passport for configurationin /public
+app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
 //logger
 app.use(morgan('dev'));
-//for req.boyd
+//for req.body
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
-// app.use(cookieParser());
 
 app.use(session({
   secret: 'secretFCCHanoi',
@@ -64,17 +62,14 @@ app.use((req, res, next) => {
   next();
 })
 
-
-
 app.use('/api', routes(passport));
-
-
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
   var error = new errors.NotFound();
   next(error);
 });
+
 // error handler
 app.use(function (err, req, res, next) {
   console.log('Coming to error handler!')
@@ -100,10 +95,9 @@ app.use(function (err, req, res, next) {
   res.status(err.code);
   res.send(err);
 
-
 });
 
-// use ES6 native Promise instead of depricated mongoose Promise
+// use ES6 native Promise instead of deprecated mongoose Promise
 mongoose.Promise = Promise;
 
 // connect to mongo db

@@ -3,7 +3,8 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "start": "nodemon ./bin/www --exec babel-node",
+    "start": "node app",
+    "dev": "nodemon ./bin/www --exec babel-node",
     "jsdoc": "./node_modules/jsdoc/jsdoc.js -c jsdoc.json"
   },
   "dependencies": {
@@ -34,7 +35,11 @@
     "validator": "^9.4.1"
   },
   "devDependencies": {
+    "chai": "^4.1.2",
+    "cheerio": "^1.0.0-rc.2",
     "jsdoc": "^3.5.5",
-    "nodemon": "^1.14.11"
+    "nodemon": "^1.14.11",
+    "rewire": "^4.0.1",
+    "supertest": "^3.0.0"
   }
 }

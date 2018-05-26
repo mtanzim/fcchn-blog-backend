@@ -1,4 +1,3 @@
-
 var express = require('express');
 var path = require('path');
 var favicon = require('serve-favicon');
@@ -14,16 +13,12 @@ var passport = require('passport');
 var session = require('express-session');
 
 var routes = require('./routes');
+var allowCrossDomain = require('./config/allowCrossDomain');
+var logCredentials = require('./config/logCredentials')
 // var isLoggedIn = require('./config/isLoggedIn')
 
 var app = express();
-var allowCrossDomain = function (req, res, next) {
-  res.header('Access-Control-Allow-Origin', "http://localhost:3000");
-  res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE');
-  res.header('Access-Control-Allow-Headers', 'Content-Type');
-  res.header('Access-Control-Allow-Credentials', true)
-  next();
-}
+
 
 require('dotenv').config();
 require('./config/passport')(passport); // pass passport for configurationin /public
@@ -43,24 +38,11 @@ app.use(session({
 app.use(allowCrossDomain);
 app.use(passport.initialize());
 app.use(passport.session());
+// app.use(logCredentials);
 
-//credentials logging middleware
-app.use((req, res, next) => {
-  console.log('')
-  // console.log('Cookies: ', req.cookies)
-  // // Cookies that have been signed
-  // console.log('Signed Cookies: ', req.signedCookies)
-  console.log('Checking Session Authentication:')
-  console.log("isAuthenticated: " + req.isAuthenticated())
-  // console.log(req.session);
-  if (req.isAuthenticated()) {
-    console.log("User credentials:");
-    console.log(req.user);
-  }
-
-  console.log('')
-  next();
-})
+if (process.env.NODE_ENV === 'production') {
+  app.use(express.static('./public/build'));
+}
 
 app.use('/api', routes(passport));
 
@@ -72,8 +54,8 @@ app.use(function (req, res, next) {
 
 // error handler
 app.use(function (err, req, res, next) {
-  console.log('Coming to error handler!')
-  console.log(err.name)
+  // console.log('Coming to error handler!')
+  // console.log(err.name)
   switch (err.name) {
     case 'CastError':
       err = new errors.BadRequest(`Invalid ${err.path} field`);

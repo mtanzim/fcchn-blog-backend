@@ -1,5 +1,5 @@
 //note: with babel-node for es6, use the below mocha command:
-//mocha --compilers js:babel-core/register
+//mocha --compilers js:babel-core/register/*  */
 
 //can also user assert, and should
 var expect = require('chai').expect;

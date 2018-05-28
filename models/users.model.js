@@ -16,12 +16,12 @@ const UserSchema = new mongoose.Schema({
       validator: (v) => {
         return isLength(v, { min: 6, max: undefined });
       },
-      message: 'Password is too short',
+      message: 'Password is too short!',
     }
   },
   email: {
     type: String,
-    required: [true, 'Email can not be empty'],
+    required: [true, 'Email can not be empty!'],
     validate: [isEmail, 'Email is invalid']
   },
   firstname: { type: String },

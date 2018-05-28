@@ -62,7 +62,7 @@ app.use(function (err, req, res, next) {
       break;
     case 'NotFound':
       err = new errors.NotFound();
-      break;
+      break;/*  */
     case 'ValidationError':
       err = new errors.BadRequest(`${err.message.split(':')[2].trim()}`);
       break;

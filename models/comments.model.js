@@ -10,7 +10,7 @@ var CommentSchema = new Schema({
     required: true,
     validate: {
       validator: (v) => {
-        return isLength(v, { min: undefined, max: 2 });
+        return isLength(v, { min: undefined, max: 1000 });
       },
       message: 'Content too long!',
     },

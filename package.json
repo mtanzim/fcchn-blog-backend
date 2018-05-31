@@ -2,8 +2,11 @@
   "name": "fcchn-blog-server",
   "version": "0.0.0",
   "private": true,
+  "engines": {
+    "node": "8.10.0"
+  },
   "scripts": {
-    "start": "node app",
+    "start": "node ./bin/www ",
     "dev": "nodemon ./bin/www --exec babel-node",
     "jsdoc": "./node_modules/jsdoc/jsdoc.js -c jsdoc.json"
   },

@@ -23,8 +23,12 @@ var app = express();
 require('dotenv').config();
 require('./config/passport')(passport); // pass passport for configurationin /public
 app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
-//logger
-app.use(morgan('dev'));
+
+if (process.env.NODE_ENV !== 'production') {
+  //logger
+  app.use(morgan('dev'));
+}
+
 //for req.body
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));

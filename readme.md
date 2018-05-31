@@ -1,19 +1,20 @@
-# MERN Stack Dynamic Application
+# [Project 3: Dynamic Blogging App](https://fcchanoiblog.herokuapp.com/)
+
+<https://fcchanoiblog.herokuapp.com/>
 
 ## Overview
 
-Fullstack application being developed for educational purposes, using the MERN stack.
-create-react-app (CRA) boilerplate was used.
+This is a fullstack application being developed for educational purposes, using the MERN stack. Front end utilizes the create-react-app (CRA) boilerplate.
 
-This project has been converted using CRA from the following FCC Hanoi Front End Project:
-
+This project front end has been converted using CRA from the following FCC Hanoi Front End Project:
 <https://github.com/tamtm/fcchn-blog>
 
 The following contains the forked front-end:
 
 <https://github.com/mtanzim/blogfcchanoicra>
 
-## Project 3: Dynamic Blogging App
+This repo contains the back end components.
+
 
 ### Objectives
 
